@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full height of the viewport */
+        overflow: hidden; /* Prevents scrolling */
+        background-color: #000; /* Optional: Set a background color */
+      }
+  
+      canvas {
+        display: block; /* Removes extra space below the canvas */
+      }
+    </style>
+  </head>
+<body >
+  <div>
+    <canvas id="mygame-canvas" width="1280" height="720"></canvas>
+  </div>
+
+  <script type="module">
+    import init from './out/mygame.js'
+
+    init().catch((error) => {
+      if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
+        throw error;
+      }
+    });
+  </script>
+
+</body>
+
+</html>

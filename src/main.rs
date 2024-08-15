@@ -1,4 +1,4 @@
-use bevy::{prelude::*, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
+use bevy::{prelude::*, sprite::{MaterialMesh2dBundle, Mesh2dHandle}, window::WindowResized};
 use rand::Rng;
 
 fn main() {
@@ -29,6 +29,8 @@ struct AnimatedColor;
 #[derive(Resource)]
 struct ColorChangeTimer(Timer);
 
+const BALL_RADIUS: f32 = 50.0;
+
 fn setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -37,7 +39,7 @@ fn setup(
     commands.spawn(Camera2dBundle::default());
     commands.spawn((Player, AnimatedColor, MaterialMesh2dBundle {
         mesh: Mesh2dHandle(
-            meshes.add(Circle { radius: 50.0 })
+            meshes.add(Circle { radius: BALL_RADIUS })
         ),
         material: materials.add(Color::WHITE),
         ..Default::default()
@@ -47,8 +49,15 @@ fn setup(
 const MOVE_SPEED: f32 = 8.0;
 fn move_player(
     mut transforms: Query<&mut Transform, With<Player>>,
-    keys: Res<ButtonInput<KeyCode>>
+    keys: Res<ButtonInput<KeyCode>>,
+    mut windows: Query<&mut Window>,
 ) {
+    let window = windows.single_mut();
+
+    let half_width = window.width() / 2.0;
+    let half_height = window.height() / 2.0;
+
+
     for mut transform in transforms.iter_mut() {
         let mut direction = Vec3::ZERO;
 
@@ -71,6 +80,20 @@ fn move_player(
         if 0.0 < direction.length() {
             transform.translation += MOVE_SPEED * direction.normalize();
         }
+
+
+        if transform.translation.x > half_width {
+            transform.translation.x = -half_width;
+        } else if transform.translation.x < -half_width {
+            transform.translation.x = half_width;
+        }
+
+        if transform.translation.y > half_height {
+            transform.translation.y = -half_height;
+        } else if transform.translation.y < -half_height {
+            transform.translation.y = half_height;
+        }
+        
     }
         
         
